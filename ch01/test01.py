@@ -60,7 +60,6 @@ env.close() # 关闭图形界面
 #     action = env.action_space.sample()  # this is where you would insert your policy
 #     observation, reward, terminated, truncated, info = env.step(action)
 #     print(observation)
-
 #     if terminated or truncated:
 #         observation, info = env.reset()
 
