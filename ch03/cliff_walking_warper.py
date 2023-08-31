@@ -1,6 +1,7 @@
 import gymnasium as gym
 import turtle
 import numpy as np
+import sarsa
 
 # turtle tutorial : https://docs.python.org/3.3/library/turtle.html
 
@@ -150,7 +151,7 @@ class CliffWalkingWapper(gym.Wrapper):
         self.move_player(x_pos, y_pos)
 
 
-def env_agent_config(cfg,seed=1):
+def env_agent_config(cfg, seed=1):
     '''创建环境和智能体
     Args:
         cfg ([type]): [description]
@@ -161,9 +162,10 @@ def env_agent_config(cfg,seed=1):
     '''    
     env = gym.make(cfg.env_name)  
     env = CliffWalkingWapper(env)
-    env.seed(seed) # 设置随机种子
+    env.reset(seed=seed) # 设置随机种子
+    # env.seed(seed) # 设置随机种子
     n_states = env.observation_space.n # 状态维度
     n_actions = env.action_space.n # 动作维度
     print(f"状态数：{n_states}，动作数：{n_actions}")
-    agent = Sarsa(n_actions,cfg)
+    agent = sarsa.Sarsa(n_actions,cfg)
     return env,agent

@@ -3,8 +3,9 @@ import numpy as np
 from collections import defaultdict
 import torch
 import math
+
 class Sarsa(object):
-    def __init__(self, n_actions,cfg):
+    def __init__(self, n_actions, cfg):
         self.n_actions = n_actions  
         self.lr = cfg.lr  
         self.gamma = cfg.gamma  
@@ -22,7 +23,7 @@ class Sarsa(object):
         action_probs[best_action] += (1.0 - self.epsilon)
         action = np.random.choice(np.arange(len(action_probs)), p=action_probs) 
         return action
-    def predict(self,state):
+    def predict(self, state):
         return np.argmax(self.Q[state])
     def update(self, state, action, reward, next_state, next_action, terminated, truncated):
         Q_predict = self.Q[state][action]
@@ -31,7 +32,7 @@ class Sarsa(object):
         else:
             Q_target = reward + self.gamma * self.Q[next_state][next_action] # 与Q learning不同，Sarsa是拿下一步动作对应的Q值去更新
         self.Q[state][action] += self.lr * (Q_target - Q_predict) 
-    def save(self,path):
+    def save(self, path):
         '''把 Q表格 的数据保存到文件中
         '''
         import dill
@@ -46,13 +47,13 @@ class Sarsa(object):
         import dill
         self.Q =torch.load(f=path+'sarsa_model.pkl',pickle_module=dill)
 
-def train(cfg,env,agent):
+def train(cfg, env, agent):
     print('开始训练！')
     print(f'环境:{cfg.env_name}, 算法:{cfg.algo_name}, 设备:{cfg.device}')
     rewards = []  # 记录奖励
     for i_ep in range(cfg.train_eps):
         ep_reward = 0  # 记录每个回合的奖励
-        state = env.reset()  # 重置环境,即开始新的回合
+        state, info = env.reset()  # 重置环境,即开始新的回合
         action = agent.sample(state)
         while True:
             action = agent.sample(state)  # 根据算法采样一个动作
@@ -69,7 +70,7 @@ def train(cfg,env,agent):
     print('完成训练！')
     return {"rewards":rewards}
 
-def test(cfg,env,agent):
+def test(cfg, env, agent):
     print('开始测试！')
     print(f'环境：{cfg.env_name}, 算法：{cfg.algo_name}, 设备：{cfg.device}')
     rewards = []  # 记录所有回合的奖励
