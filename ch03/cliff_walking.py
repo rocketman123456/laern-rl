@@ -30,14 +30,14 @@ import datetime
 import argparse
 import matplotlib.pyplot as plt
 import seaborn as sns
-import cliff_walking_warper as cww
+from cliff_walking_warper import *
 import sarsa
 
 def get_args():
     """ 
     """
     curr_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")  # 获取当前时间
-    parser = argparse.ArgumentParser(description="hyperparameters")      
+    parser = argparse.ArgumentParser(description="hyperparameters")
     parser.add_argument('--algo_name',default='Sarsa',type=str,help="name of algorithm")
     parser.add_argument('--env_name',default='CliffWalking-v0',type=str,help="name of environment")
     parser.add_argument('--train_eps',default=400,type=int,help="episodes of training") # 训练的回合数
@@ -47,7 +47,8 @@ def get_args():
     parser.add_argument('--epsilon_end',default=0.01,type=float,help="final value of epsilon") # e-greedy策略中的终止epsilon
     parser.add_argument('--epsilon_decay',default=300,type=int,help="decay rate of epsilon") # e-greedy策略中epsilon的衰减率
     parser.add_argument('--lr',default=0.1,type=float,help="learning rate")
-    parser.add_argument('--device',default='cpu',type=str,help="cpu or cuda")          
+    parser.add_argument('--device',default='cpu',type=str,help="cpu or cuda")
+    # parser.add_argument('--device',default='cuda',type=str,help="cpu or cuda")
     args = parser.parse_args([])                          
     return args
 
@@ -83,9 +84,8 @@ def plot_rewards(rewards,cfg, tag='train'):
 # 获取参数
 cfg = get_args()
 # 训练
-env, agent = cww.env_agent_config(cfg)
+env, agent = env_agent_config(cfg)
 res_dic = sarsa.train(cfg, env, agent)
-
 plot_rewards(res_dic['rewards'], cfg, tag="train")  
 # 测试
 res_dic = sarsa.test(cfg, env, agent)
